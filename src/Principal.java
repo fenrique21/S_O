@@ -1,13 +1,38 @@
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.DefaultListModel;
+
 public class Principal extends javax.swing.JFrame {
 
     public Principal() {
         initComponents();
         setLocationRelativeTo(null);
+        reloj.setlabel(jLabel7);
+        jTextField2.setEditable(false);
+        jTextField1.setEditable(false);
+        l1.generarmemoria();
+        jTextField1.setText("0x" + l1.getmemoria());
+        reloj.start();
+        hillis.start();
     }
-    public void hola(){
-        
-    }
-    
+    Reloj reloj = new Reloj();
+    ArrayList<Hilo> hilos = new ArrayList();
+    ArrayList<Hilo> copia = new ArrayList();
+    Hilolist hillis = new Hilolist();
+    Hilo l1 = new Hilo();
+    int cont = 0;
+    int valor = 0;
+    DefaultListModel model1 = new DefaultListModel();
+    DefaultListModel model2 = new DefaultListModel();
+    DefaultListModel model3 = new DefaultListModel();
+    DefaultListModel model4 = new DefaultListModel();
+    private Date fecha;
+    String formato = "kk:mm:ss";
+    SimpleDateFormat formatofecha = new SimpleDateFormat(formato);
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -267,11 +292,36 @@ public class Principal extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        
+        fecha = new Date();
+        Hilo hilo = new Hilo();
+        hilo.iniciartiempo();
+        hilo.setterminado(true);
+        hilo.start();
+        hilo.setName(String.valueOf(cont + 1));
+        model1.add(jList1.getModel().getSize(), hilo.getName());
+        model2.add(cont, hilo.getName());
+        model3.add(cont, formatofecha.format(fecha));
+        model4.add(cont, hilo.gettiempo());
+        jList1.setModel(model1);
+        jList2.setModel(model2);
+        jList3.setModel(model3);
+        jList4.setModel(model4);
+        l1.generarmemoria();
+        jTextField1.setText("0x" + l1.getmemoria());
+        hilo.setmemoria("0x" + jTextField1.getText());
+        hilos.add(hilo);
+        copia.add(hilo);
+        try {
+            hillis.quitartiempo(jList5, hilos, true, jTextField2, jList1, copia);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        cont++;
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        
+        hilos.get(jList2.getSelectedIndex()).bloquear(false);
+        hilos.get(jList2.getSelectedIndex()).setterminado(false);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     public static void main(String args[]) {
